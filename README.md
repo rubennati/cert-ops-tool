@@ -29,7 +29,7 @@ Built on [`acme.sh`](https://github.com/acmesh-official/acme.sh) with DNS-01 cha
 Pre-built multi-arch images (amd64 + arm64) are published to GHCR with every release:
 
 ```
-ghcr.io/rubennati/cert-ops-tool:0.2.0
+ghcr.io/rubennati/cert-ops-tool:0.2.1
 ```
 
 The compose file pulls this image automatically. No local build step needed.

@@ -6,6 +6,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+## [0.2.1] — 2026-05-04
+
+### Added
+
+- Startup log printed to container stdout on every start — shows CF_Token status, ACME email, server, key length, and timezone so `docker compose logs` gives immediate confirmation the container is configured correctly.
+
 ## [0.2.0] — 2026-05-04
 
 ### Changed
@@ -38,6 +44,7 @@ Initial public release.
 - No automatic distribution to target devices yet — output files must be transferred manually (SCP / rsync / etc.)
 - No built-in expiry alerting
 
-[Unreleased]: https://github.com/rubennati/cert-ops-tool/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/rubennati/cert-ops-tool/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/rubennati/cert-ops-tool/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/rubennati/cert-ops-tool/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/rubennati/cert-ops-tool/releases/tag/v0.1.0
