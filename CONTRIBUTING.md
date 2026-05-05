@@ -83,6 +83,29 @@ Maintained by the project owner. Version bumps follow [Semantic Versioning](http
 
 Release flow: `dev → main` merge → `CHANGELOG.md` update → Git tag `v0.x.x` → Docker image builds automatically.
 
+## Working on the docs site
+
+The docs site lives in `docs/` and is built with [VitePress](https://vitepress.dev).
+
+**Prerequisites:** Node 18+ (VitePress requires it — Node 16 will fail with a `crypto` error).
+
+```bash
+npm install
+npm run docs:dev      # local preview at http://localhost:5173/cert-ops-tool/
+npm run docs:build    # production build into docs/.vitepress/dist/
+```
+
+**Deployment** happens automatically via GitHub Actions on every push to `main` that touches `docs/**`, `package.json`, or `.github/workflows/docs.yml`. No manual step needed.
+
+### Known gotchas (lessons from initial setup)
+
+| Symptom | Root cause | Fix |
+|---|---|---|
+| `"vitepress" cannot be loaded by require` | `"type": "module"` missing in `package.json` | Already present — don't remove it |
+| `npm ci` fails with missing `@esbuild/linux-*` | Lockfile generated on macOS arm64 lacks Linux platform packages | `package-lock.json` is gitignored; CI runs `npm install` fresh |
+| Build fails immediately with `exit code 1` | Missing `actions/configure-pages` step in workflow | Already in `docs.yml` — required, not optional |
+| Actions deprecation warning (Node 20) | VitePress deployment docs lag behind on action versions | Use `configure-pages@v6`, `upload-pages-artifact@v5`, `deploy-pages@v5` |
+
 ## Questions?
 
 Open a [discussion](https://github.com/rubennati/cert-ops-tool/discussions) or file an issue with the `question` label.
