@@ -4,6 +4,5 @@ volumes/
 
 # VitePress
 node_modules/
-package-lock.json
 docs/.vitepress/dist
 docs/.vitepress/cache
