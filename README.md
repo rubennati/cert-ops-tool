@@ -37,6 +37,16 @@ Built on [`acme.sh`](https://github.com/acmesh-official/acme.sh) with DNS-01 cha
 3. Certificates are exported to `./volumes/output/<domain>/` as standard PEM files
 4. The Cloudflare API token is stored as a Docker Secret in `.secrets/`, never in environment variables
 
+## Docker image
+
+Pre-built multi-arch images (amd64 + arm64) are published to GHCR with every release:
+
+```
+ghcr.io/rubennati/cert-ops-tool:0.2.1
+```
+
+The compose file pulls this image automatically. No local build step needed.
+
 ## Setup
 
 ```bash
