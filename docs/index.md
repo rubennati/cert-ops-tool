@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: cert-ops-tool
+  name: Cert Ops Tool
   text: TLS certificates for everything without a reverse proxy
   tagline: NAS · routers · firewalls · Proxmox · mail servers — DNS-01 challenge, Docker Secrets, zero open ports required.
   actions:

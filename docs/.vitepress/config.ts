@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: 'cert-ops-tool',
+  title: 'Cert Ops Tool',
   description: 'TLS certificate issuance and renewal for NAS, routers, firewalls, Proxmox, and anything without a reverse proxy.',
 
   // GitHub Pages: https://rubennati.github.io/cert-ops-tool/

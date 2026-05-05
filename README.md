@@ -1,6 +1,6 @@
 <div align="center">
 
-# cert-ops-tool
+# Cert Ops Tool
 
 **TLS certificates for devices that don't sit behind a reverse proxy.**
 
