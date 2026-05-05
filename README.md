@@ -1,6 +1,19 @@
+<div align="center">
+
 # cert-ops-tool
 
-Certificate issuance + renewal for devices that don't sit behind a reverse proxy — NAS, routers, firewalls, mail servers, Proxmox hosts, anything with a web UI that wants a trusted TLS cert.
+**TLS certificates for devices that don't sit behind a reverse proxy.**
+
+NAS · routers · firewalls · Proxmox · mail servers — DNS-01 challenge, Docker Secrets, zero open ports required.
+
+[![License](https://img.shields.io/badge/License-PolyForm_NC_1.0-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.2.1-blue)](CHANGELOG.md)
+[![Docker](https://img.shields.io/badge/GHCR-cert--ops--tool-2496ED?logo=docker&logoColor=white)](https://github.com/rubennati/cert-ops-tool/pkgs/container/cert-ops-tool)
+[![Docs](https://img.shields.io/badge/docs-rubennati.github.io-green)](https://rubennati.github.io/cert-ops-tool/)
+
+</div>
+
+---
 
 Built on [`acme.sh`](https://github.com/acmesh-official/acme.sh) with DNS-01 challenge (no port-80 open, works for internal-only hosts). Ships as a single Docker Compose service with scripted workflows for issuing, renewing, and exporting certificates.
 
@@ -41,6 +54,7 @@ mkdir -p .secrets
 printf '%s' 'your-cloudflare-api-token' > .secrets/cf_token.txt
 
 # 3. Start the container
+docker compose pull
 docker compose up -d
 ```
 
@@ -157,7 +171,7 @@ This repo's own code (scripts, compose, entrypoint wrapper, docs) is under [Poly
 
 ## Roadmap
 
-- Additional DNS providers beyond Cloudflare (Hetzner, DigitalOcean, deSEC, Desec, etc.)
+- Additional DNS providers beyond Cloudflare (Hetzner, DigitalOcean, deSEC, etc.)
 - Automatic distribution via API to target devices (Proxmox VE, Synology DSM, OPNsense, Nginx Proxy Manager)
 - Optional web UI for issuing + monitoring expiry
 - Scheduled expiry alerts (ntfy / Gotify / email / webhook)
