@@ -24,17 +24,35 @@ Thanks for considering a contribution. This project is small and opinionated, bu
 
 If you have an idea for a larger change, please open an issue first to discuss the direction before writing code.
 
+## Branch model
+
+```
+feature/xyz  ──┐
+fix/abc      ──┼──▶  dev  ──▶  main  ──▶  tag v0.x.x
+hotfix/yyy   ──┘                │               │
+                                │               └── Docker image (GHCR)
+                                └── Docs site (GitHub Pages)
+```
+
+| Branch | Purpose |
+|---|---|
+| `main` | Always releasable. Triggers the docs deployment on every push. |
+| `dev` | Integration branch — all features and fixes land here first. |
+| `feature/*` / `fix/*` | Short-lived branches, one topic each, merged into `dev`. |
+
+Releases are created by tagging `main` with `v0.x.x`, which triggers the Docker image build.
+
 ## Workflow
 
 1. **Fork** the repository
-2. **Create a branch** off `main` with a descriptive name: `fix-wizard-empty-san`, `add-hetzner-dns`, `docs-synology-import`
+2. **Create a branch** off `dev` with a descriptive name: `fix/wizard-empty-san`, `feature/hetzner-dns`, `docs/synology-import`
 3. **Make your changes** — keep them focused on a single topic
 4. **Test** — at minimum:
    - `docker compose up -d` starts without errors
    - The wizard runs through interactively
    - An `issue` command produces `fullchain.pem` and `privkey.pem`
    - A `renew` command works (can be simulated against Let's Encrypt staging)
-5. **Open a Pull Request** against `main`
+5. **Open a Pull Request** against `dev`
 
 ## Commit messages
 
@@ -63,7 +81,7 @@ Maintained by the project owner. Version bumps follow [Semantic Versioning](http
 - **MINOR** — new functionality, backwards-compatible
 - **PATCH** — bug fixes, docs, security fixes
 
-Each release updates `CHANGELOG.md` and creates a Git tag (`v0.1.0`, `v0.2.0`, ...).
+Release flow: `dev → main` merge → `CHANGELOG.md` update → Git tag `v0.x.x` → Docker image builds automatically.
 
 ## Questions?
 
