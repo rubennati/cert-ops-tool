@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cert-ops.rubennati.at/sitemap.xml

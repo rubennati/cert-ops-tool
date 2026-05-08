@@ -1,5 +1,7 @@
 ---
 layout: home
+title: Create TLS certificates with acme.sh and DNS-01.
+titleTemplate: false
 
 hero:
   text: |-

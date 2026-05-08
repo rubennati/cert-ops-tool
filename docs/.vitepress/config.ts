@@ -20,6 +20,18 @@ export default defineConfig({
     )
   },
 
+  // Inject a canonical link tag on every page.
+  transformPageData(pageData) {
+    const path = pageData.relativePath
+      .replace(/\.md$/, '.html')
+      .replace(/(^|\/)index\.html$/, '$1')
+    pageData.frontmatter.head ??= []
+    pageData.frontmatter.head.push([
+      'link',
+      { rel: 'canonical', href: `https://cert-ops.rubennati.at/${path}` },
+    ])
+  },
+
   themeConfig: {
     nav: [
       { text: 'Setup', link: '/guide/setup' },
