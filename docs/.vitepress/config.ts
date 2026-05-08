@@ -4,9 +4,7 @@ export default defineConfig({
   title: 'Cert Ops Tool',
   description: 'TLS certificate issuance and renewal for NAS, routers, firewalls, Proxmox, and anything without a reverse proxy.',
 
-  // GitHub Pages: https://rubennati.github.io/cert-ops-tool/
-  // To use a custom domain, remove base and add a docs/public/CNAME file.
-  base: '/cert-ops-tool/',
+  // Custom domain: https://cert-ops.rubennati.at/ (CNAME in docs/public/)
 
   themeConfig: {
     nav: [
