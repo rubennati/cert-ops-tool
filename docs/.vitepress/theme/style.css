@@ -17,14 +17,14 @@
   }
 }
 
-/* Tighten the gap between content and footer */
+/* Tighten the gap between content and footer (default 96px / 128px) */
 .VPHome {
-  padding-bottom: 32px !important;
+  margin-bottom: 32px !important;
 }
 
 @media (min-width: 768px) {
   .VPHome {
-    padding-bottom: 48px !important;
+    margin-bottom: 48px !important;
   }
 }
 
