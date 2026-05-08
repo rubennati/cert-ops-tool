@@ -2,8 +2,9 @@
 layout: home
 
 hero:
-  text: Create TLS certificates. Upload them where you need them.
-  tagline: rubennati / cert-ops-tool
+  text: |-
+    Create TLS certificates.
+    Upload them where you need them.
   actions:
     - theme: brand
       text: Get Started

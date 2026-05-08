@@ -42,7 +42,7 @@ export default defineConfig({
 
     footer: {
       message: 'PolyForm Noncommercial 1.0.0',
-      copyright: '© Ruben Nati',
+      copyright: '© rubennati',
     },
 
     editLink: {

@@ -16,3 +16,14 @@
     font-size: 44px;
   }
 }
+
+/* Tighten the gap between feature cards and the footer */
+.VPHomeFeatures {
+  padding-bottom: 32px !important;
+}
+
+@media (min-width: 768px) {
+  .VPHomeFeatures {
+    padding-bottom: 48px !important;
+  }
+}
