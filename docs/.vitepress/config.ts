@@ -11,6 +11,15 @@ export default defineConfig({
     hostname: 'https://cert-ops.rubennati.at/',
   },
 
+  // Add role="main" to the content wrapper so screen readers can jump
+  // straight to the main content (Lighthouse a11y: "main landmark").
+  transformHtml(html) {
+    return html.replace(
+      /<div class="VPContent/g,
+      '<div role="main" class="VPContent',
+    )
+  },
+
   themeConfig: {
     nav: [
       { text: 'Setup', link: '/guide/setup' },

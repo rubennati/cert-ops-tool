@@ -17,13 +17,24 @@
   }
 }
 
-/* Tighten the gap between feature cards and the footer */
-.VPHomeFeatures {
+/* Tighten the gap between content and footer */
+.VPHome {
   padding-bottom: 32px !important;
 }
 
 @media (min-width: 768px) {
-  .VPHomeFeatures {
+  .VPHome {
     padding-bottom: 48px !important;
   }
+}
+
+/* Higher-contrast brand color for buttons (WCAG AA — white on default
+   VitePress brand failed at ~3.9:1; #4f46e5 lifts it to ~5.0:1). */
+:root {
+  --vp-button-brand-bg: #4f46e5;
+  --vp-button-brand-hover-bg: #4338ca;
+  --vp-button-brand-active-bg: #3730a3;
+  --vp-button-brand-border: #4f46e5;
+  --vp-button-brand-hover-border: #4338ca;
+  --vp-button-brand-active-border: #3730a3;
 }
