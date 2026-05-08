@@ -2,9 +2,14 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: 'Cert Ops Tool',
-  description: 'TLS certificate issuance and renewal for NAS, routers, firewalls, Proxmox, and anything without a reverse proxy.',
+  description: 'TLS certificate issuance with acme.sh and DNS-01. PEM and PFX output for upload onto NAS, routers, firewalls, mail servers.',
+  lang: 'en-US',
 
   // Custom domain: https://cert-ops.rubennati.at/ (CNAME in docs/public/)
+
+  sitemap: {
+    hostname: 'https://cert-ops.rubennati.at/',
+  },
 
   themeConfig: {
     nav: [

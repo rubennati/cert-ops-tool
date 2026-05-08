@@ -2,9 +2,7 @@
 
 # Cert Ops Tool
 
-**TLS certificates for devices that don't sit behind a reverse proxy.**
-
-NAS · routers · firewalls · Proxmox · mail servers — DNS-01 challenge, Docker Secrets, zero open ports required.
+Create TLS certificates. Upload them where you need them.
 
 [![License](https://img.shields.io/badge/License-PolyForm_NC_1.0-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.2.1-blue)](CHANGELOG.md)
@@ -15,7 +13,7 @@ NAS · routers · firewalls · Proxmox · mail servers — DNS-01 challenge, Doc
 
 ---
 
-Built on [`acme.sh`](https://github.com/acmesh-official/acme.sh) with DNS-01 challenge (no port-80 open, works for internal-only hosts). Ships as a single Docker Compose service with scripted workflows for issuing, renewing, and exporting certificates.
+Built on [`acme.sh`](https://github.com/acmesh-official/acme.sh) with DNS-01 challenge (no port-80 open). Ships as a single Docker Compose service with scripted workflows for issuing, renewing, and exporting certificates.
 
 > **License**: [PolyForm Noncommercial 1.0.0](LICENSE) — free for personal, educational, research, and other noncommercial use. Commercial use requires a separate arrangement.
 
