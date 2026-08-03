@@ -3,14 +3,14 @@
 Things that should happen but have not. Released changes are in
 [CHANGELOG.md](CHANGELOG.md); the short feature list is in
 [README.md](README.md#roadmap). This file is for items that need a decision
-before anyone can work on them — the point of an entry here is to state the
-problem and the options, not to pick one in advance.
+before anyone can work on them — an entry states the problem, the direction
+taken, and what is still open.
 
 ---
 
 ## Open decision: keep the operator's identity out of the repository
 
-**Status:** to research and decide. Nothing implemented.
+**Status:** direction decided, nothing implemented.
 
 ### Why
 
@@ -45,44 +45,71 @@ real values on `cert-ops.rubennati.at`. The goal is narrower:
 (commit `3f9308d`, merged in #1), and the live site publishes it anyway. Any
 mechanism short of a history rewrite leaves the old copies reachable, and a
 scraper can read the rendered page regardless. So the realistic benefit is
-mostly (1) — fork hygiene — and only partly (2). Decide whether that is worth a
-build-time decryption step before choosing one.
+mostly (1) — fork hygiene — and only partly (2). The step below is cheap enough
+to be worth it anyway, but it should not be mistaken for making the data
+private.
 
-### Options to evaluate
+### Direction
 
-- **SOPS + age.** Encrypted `legal.enc.yaml` (or similar) in the repository,
-  decrypted in the Pages workflow with an age key held in GitHub Actions
-  Secrets, values rendered into the pages at build time. Repository stays
-  public; cleartext exists only inside CI. A fork gets a file it cannot
-  decrypt — arguably the correct failure, because it forces the forker to
-  supply their own values.
-- **GitHub Actions Secrets alone.** Keep the values out of the repository
-  entirely and inject them at build time. No crypto, fewer moving parts, but
-  the values are then invisible to a local `npm run docs:dev`, so a documented
-  placeholder fallback is required.
-- **Private repository or submodule** holding the legal pages, pulled at
-  deploy. Conceptually clean, most moving parts, and it splits the site's
-  content across two places.
-- **Placeholders by default plus a local, gitignored override file.** No crypto
-  at all and the friendliest to forks, but nothing prevents a contributor from
-  committing real values by accident.
-- **A "make it yours" reset script** (`scripts/…`) that replaces identity,
-  domain (CNAME, canonical, sitemap hostname), footer links and the legal and
-  privacy pages with placeholders. Useful *in addition to* whichever of the
-  above is chosen, and the thing a forker actually needs.
+Encrypt whole files, not fields — but only the two that actually carry personal
+data, and always alongside a placeholder version so the repository still builds
+without a key.
 
-### Questions to answer before deciding
+**Encrypt:** `docs/legal.md` and `docs/privacy.md`. Each is committed twice: an
+encrypted blob (`age`, or SOPS in binary mode) holding the real page, and a
+cleartext **placeholder** of the same page with the identity fields blanked out
+and a line saying they must be filled in before publishing. The Pages workflow
+decrypts the blob with a key from GitHub Actions Secrets, overwrites the
+placeholder in the checkout, and builds. Plain text then exists in exactly two
+places: the encrypted blob and the CI runner.
 
-- Must `npm run docs:dev` work offline, without secrets, for anyone?
-- What happens on a pull request from a fork? Secrets are not available there —
-  the docs build must not fail, so placeholders have to be a valid build state.
-- Is rewriting the git history in scope, or is "no new plaintext from here on"
-  the goal?
-- Who else must be able to decrypt, if anyone? A single age key held by one
-  person is also a single point of failure.
-- Does encryption in the repository measurably reduce scraping, given the live
-  site is public and indexed? If the honest answer is "barely", the placeholder
-  route wins on simplicity.
+That gives all three properties at once — the live site renders the real
+disclosure, the repository holds no readable identity, and a fork gets a
+template that asks to be filled in instead of someone else's disclosure.
+
+**Leave alone:** `docs/.vitepress/config.ts`, `docs/.vitepress/theme/SiteFooter.vue`,
+`docs/public/CNAME` and `docs/public/robots.txt`. They hold the domain and
+nothing else, and:
+
+- `config.ts` and `SiteFooter.vue` are build machinery. Encrypt them and nobody
+  can build or preview the site without the key — including the operator.
+- `CNAME` has to end up as plain text in the published output for GitHub Pages
+  to serve the custom domain at all.
+- The domain is not personal data in the sense that matters here: it is in
+  public DNS, in the `CNAME` record, in Certificate Transparency logs, and in
+  every link to the site. Encrypting it costs the local build and buys nothing.
+
+If the goal for those files is *fork convenience* rather than privacy — one
+place to change the domain instead of four — that is a small refactor into a
+single config value, not a crypto problem. Worth doing, separately.
+
+**Tooling, to settle when implementing:** plain `age` is probably enough for
+whole-file blobs (`age -R recipients.txt -o docs/legal.md.age docs/legal.md`,
+`age -d -i key.txt` in CI). SOPS earns its keep on *partially* encrypted
+structured files, which this is not; its binary mode would work too and brings
+`.sops.yaml` rules along. Either way the key lives in Actions Secrets and never
+in the repository.
+
+### Answered
+
+- **Do pull requests from forks break?** No. `.github/workflows/docs.yml` runs
+  on push to `main` and `workflow_dispatch` only — there is no `pull_request`
+  trigger, so a fork PR never needs the key. If a PR preview build is added
+  later, the committed placeholder keeps it building.
+- **Does local development break?** No, that is what the placeholder is for.
+  `npm run docs:dev` builds the placeholder pages, offline, without a key.
+
+### Still open
+
+- **Key custody.** A single age key is a single point of failure — losing it
+  means the pages can never be decrypted again. Decide on a second recipient
+  or an offline backup as part of the implementation, not after it.
+- **The git history.** Rewrite it, or accept that `3f9308d` keeps the old
+  plaintext reachable and treat this as "no new plaintext from here on"?
+- **Placeholder wording.** It has to be obviously a placeholder — a disclosure
+  that looks filled in but is not is worse than an empty one.
+- **Fork instructions.** `CONTRIBUTING.md` and `README.md` need a short section
+  saying what to replace and that the encrypted blobs are not theirs to keep.
 
 ### Done when
 
