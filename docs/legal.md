@@ -57,11 +57,16 @@ Two different bodies of work, and they are not under the same terms:
   [PolyForm Noncommercial License 1.0.0](https://github.com/rubennati/cert-ops-tool/blob/main/LICENSE).
   Use it for anything that is not a commercial purpose; commercial use needs a
   separate agreement.
-- **This site's text and page structure** are not yet under a named licence.
-  Until one is chosen, treat them as all rights reserved: quote with
-  attribution, but do not republish the pages wholesale. Reusing a command or
-  configuration snippet shown here follows the code licence above, not this
-  paragraph.
+- **This site's text and page structure** are under
+  [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/): use them,
+  adapt them, quote them — name the source, link the licence, and keep it out
+  of commercial use. That mirrors the line the code licence draws, so the same
+  material does not become commercially free by being read on a web page
+  instead of in the repository.
+
+The two do not merge where they meet. A command or configuration snippet quoted
+on these pages stays under the code licence, whichever page you found it on, so
+the same snippet does not carry different terms depending on where it was read.
 
 ## Links to other sites
 

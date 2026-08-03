@@ -69,6 +69,7 @@ const year = new Date().getUTCFullYear()
             <li><a href="/legal.html">Legal notice</a></li>
             <li><a href="/privacy.html">Privacy</a></li>
             <li><a :href="`${REPO}/blob/main/LICENSE`" target="_blank" rel="noreferrer">PolyForm Noncommercial (code)<span class="ext" aria-hidden="true">↗</span></a></li>
+            <li><a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noreferrer">CC BY-NC 4.0 (site content)<span class="ext" aria-hidden="true">↗</span></a></li>
           </ul>
         </nav>
       </div>
@@ -78,7 +79,7 @@ const year = new Date().getUTCFullYear()
         <span class="sep" aria-hidden="true">·</span>
         <span>Code <a :href="`${REPO}/blob/main/LICENSE`" target="_blank" rel="noreferrer">PolyForm Noncommercial 1.0.0</a></span>
         <span class="sep" aria-hidden="true">·</span>
-        <span>Site content <a href="/legal.html">licence not yet decided</a></span>
+        <span>Site content <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noreferrer">CC BY-NC 4.0</a></span>
       </p>
     </div>
   </footer>
@@ -114,9 +115,16 @@ const year = new Date().getUTCFullYear()
   }
 }
 
+/* Same content column as the rest of the page — 1152px is what VPHero and
+   VPFeatures use, 1104px what VPDoc uses — so the columns line up with the
+   content above instead of sprawling across the full layout width. */
 .container {
   margin: 0 auto;
-  max-width: var(--vp-layout-max-width);
+  max-width: 1152px;
+}
+
+.SiteFooter.has-sidebar .container {
+  max-width: 1104px;
 }
 
 .cols {
