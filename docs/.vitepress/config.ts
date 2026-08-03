@@ -7,6 +7,14 @@ export default defineConfig({
 
   // Custom domain: https://cert-ops.rubennati.at/ (CNAME in docs/public/)
 
+  // Favicon: the "C" mark from docs/public/. SVG for browsers that take one,
+  // .ico as the fallback older ones request from / by themselves.
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+    ['link', { rel: 'alternate icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
+  ],
+
   sitemap: {
     hostname: 'https://cert-ops.rubennati.at/',
   },
