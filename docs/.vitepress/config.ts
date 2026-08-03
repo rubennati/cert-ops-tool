@@ -33,6 +33,12 @@ export default defineConfig({
   },
 
   themeConfig: {
+    // Wordmark instead of the plain site title. siteTitle is rendered with
+    // v-html, so the two-tone mark needs no component of its own; it is styled
+    // in theme/style.css.
+    siteTitle:
+      '<span class="brand"><span class="brand-cert">Cert</span> <span class="brand-ops">Ops</span></span>',
+
     nav: [
       { text: 'Setup', link: '/guide/setup' },
       { text: 'Issuing & Renewal', link: '/guide/issuing' },
@@ -61,10 +67,8 @@ export default defineConfig({
       { icon: 'github', link: 'https://github.com/rubennati/cert-ops-tool' },
     ],
 
-    footer: {
-      message: 'PolyForm Noncommercial 1.0.0',
-      copyright: '© rubennati',
-    },
+    // No `footer` here on purpose: VitePress hides its built-in footer on every
+    // page that has a sidebar. theme/SiteFooter.vue replaces it.
 
     editLink: {
       pattern: 'https://github.com/rubennati/cert-ops-tool/edit/main/docs/:path',
