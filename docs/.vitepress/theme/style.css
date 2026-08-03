@@ -28,6 +28,31 @@
   }
 }
 
+/* Wordmark in the navbar: "Cert" in the text colour, "Ops" in the brand
+   indigo. Set as themeConfig.siteTitle (rendered with v-html). */
+.VPNavBarTitle .title .brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.18em;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.VPNavBarTitle .title .brand-ops {
+  color: var(--brand-mark);
+}
+
+:root {
+  /* Indigo 600 — ~5.0:1 on white. */
+  --brand-mark: #4f46e5;
+}
+
+.dark {
+  /* Indigo 400 — the 600 fails contrast on the dark background. */
+  --brand-mark: #a5b4fc;
+}
+
 /* Higher-contrast brand color for buttons (WCAG AA — white on default
    VitePress brand failed at ~3.9:1; #4f46e5 lifts it to ~5.0:1). */
 :root {
