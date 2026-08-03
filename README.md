@@ -183,8 +183,9 @@ This repo's own code (scripts, compose, entrypoint wrapper, docs) is under [Poly
 - Automatic distribution via API to target devices (Proxmox VE, Synology DSM, OPNsense, Nginx Proxy Manager)
 - Optional web UI for issuing + monitoring expiry
 - Scheduled expiry alerts (ntfy / Gotify / email / webhook)
+- Keep the operator's identity out of the repository, so a fork does not inherit it — see [ROADMAP.md](ROADMAP.md)
 
-See [CHANGELOG.md](CHANGELOG.md) for released versions.
+Items that need a decision before they can be worked on are written out in [ROADMAP.md](ROADMAP.md). See [CHANGELOG.md](CHANGELOG.md) for released versions.
 
 ## Contributing
 
@@ -193,5 +194,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Code of conduct: [CODE_OF_CONDUCT.md](CO
 ## Details
 
 - [CONFIG.md](CONFIG.md) — configuration reference (mandatory / nice-to-have / use-case-dependent)
+- [ROADMAP.md](ROADMAP.md) — open decisions, with the options and the questions each one turns on
 - [SECURITY.md](SECURITY.md) — vulnerability reporting
 - [CHANGELOG.md](CHANGELOG.md) — versioned change log
