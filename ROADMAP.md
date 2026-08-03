@@ -136,8 +136,94 @@ Actions secret.
   other copies, down to the file names — two variants of this would be worse
   than one done twice.
 
+### Implementation plan
+
+**Not the next thing.** Nothing is broken while this waits, and it touches how
+every page gets its values — so it wants a quiet run, not a squeeze between two
+content changes. Do it before the repository is promoted anywhere it would be
+forked in numbers.
+
+**0 — Setup, once**
+
+| What | Where |
+|---|---|
+| `age` | `brew install age` locally; `apt-get install -y age` in the workflow |
+| key pair | `age-keygen`, private key into 1Password as a secure note |
+| item path | e.g. `op://Private/age-signing-key/notesPlain` — record it in the scripts, not in a shell history |
+| public key | `secrets/recipients.txt`, committed; it is public by definition |
+| backup recipient | second key pair, private half stored outside 1Password, public half into the same recipients file |
+| deploy key | the private key as repository secret `AGE_KEY`, scoped to the `github-pages` environment the deploy job already uses |
+
+**1 — Extract the values.** Move operator, company, address, email, FN, UID and
+the site URL into `docs/.vitepress/data/site.ts`, committed, with placeholders:
+identity fields empty, `example.com` for anything the build needs to produce a
+URL. Have `config.ts` load it and pass it into `themeConfig`, so
+`SiteFooter.vue`, `legal.md` and `privacy.md` read it back through
+`useData().theme` rather than importing the module themselves. One resolution
+point in Node, no second path through Vite.
+*Verify:* the site builds from placeholders alone and `dist/` contains none of
+the real values.
+
+**2 — Encrypt.** `age -a -R secrets/recipients.txt -o secrets/site.age` on the
+real module; `docs/.vitepress/data/site.local.ts` into `.gitignore`; `site.ts`
+prefers the local file when it exists (`fs.existsSync` in the config loader).
+*Spike first:* confirm the override resolves in `docs:dev`, `docs:build` and in
+the markdown pages before moving the real values in.
+
+**3 — Scripts.** `scripts/site-decrypt.sh` and `site-encrypt.sh`, key on a
+descriptor via `op read`, never written to disk. Both refuse to run if the
+working tree has staged changes under `docs/.vitepress/data/`.
+
+**4 — Workflow.** A decrypt step in `docs.yml` before `npm run docs:build`,
+`AGE_KEY` on a descriptor rather than a temporary file.
+
+**5 — Guard against the two failure modes.**
+- Real values committed by accident: the decrypt target is gitignored, plus an
+  optional pre-commit check.
+- A *failed* decrypt shipping an empty disclosure: after the build, fail the
+  job if `dist/legal.html` still contains the placeholder marker. An Impressum
+  that silently goes blank is the worse of the two.
+
+**6 — Document it.** A short section in `README.md` and `CONTRIBUTING.md`:
+what a forker replaces, that the blob is not theirs to keep, and how to run the
+site with their own values.
+
+**7 — Decide on the history** (see above) and act on it, or write down that it
+stays.
+
 ### Done when
 
-A decision is written down (here or as an ADR), implemented in the docs build,
-and `CONTRIBUTING.md` and `README.md` state plainly what a forker has to
-replace before publishing.
+The live site still shows the real disclosure, a fresh clone without a key
+builds a site with visibly empty identity fields, `git grep` finds none of the
+real values in the working tree, and the fork instructions exist.
+
+---
+
+## Smaller open items
+
+Not decisions, just things noticed and not yet done. Each is independent of the
+entry above.
+
+- **No security headers on the domain.** The live response carries no HSTS, no
+  CSP, no `X-Content-Type-Options`, `Referrer-Policy` or `Permissions-Policy`
+  (checked 2026-08-03 against the public IP). That is Cloudflare and Pages
+  configuration, not repository content — but for a site about TLS it is a poor
+  look, and a CSP is the one that needs thought rather than a switch.
+- **No `/.well-known/security.txt`** (RFC 9116). Nothing on the site claims one
+  exists — the footer points at `SECURITY.md` — so this is an addition, not a
+  fix. If added: `Expires` in the future, and a contact that is actually read.
+- **Two facts in `docs/privacy.md` to confirm with the operator.**
+  - It says Cloudflare's dashboard shows aggregate figures only. If Logpush or
+    Web Analytics is enabled on the zone, that sentence needs to change.
+  - The email alias resolves to SimpleLogin's MX records; which mailbox it
+    forwards to is not determinable from outside and is therefore unnamed. Name
+    the provider there for completeness.
+- **Legal review.** The ECG and MedienG fields in `docs/legal.md` were filled in
+  from what is verifiable (RIS for the GewO, Vienna's Magistrat as the trade
+  authority, WKO membership as a consequence of holding a trade). Whether the
+  ECG applies at all to a site that sells nothing, and whether the chamber entry
+  needs the Fachgruppe, are questions for a lawyer.
+- **Favicon colour.** It is red, as asked. Browsers use a red padlock for a
+  *broken* TLS connection, so the association is unfortunate on a site about
+  certificates. Switching it to the wordmark's indigo is a one-line change plus
+  a re-render.
