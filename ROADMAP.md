@@ -223,7 +223,3 @@ entry above.
   authority, WKO membership as a consequence of holding a trade). Whether the
   ECG applies at all to a site that sells nothing, and whether the chamber entry
   needs the Fachgruppe, are questions for a lawyer.
-- **Favicon colour.** It is red, as asked. Browsers use a red padlock for a
-  *broken* TLS connection, so the association is unfortunate on a site about
-  certificates. Switching it to the wordmark's indigo is a one-line change plus
-  a re-render.
