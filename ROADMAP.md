@@ -51,44 +51,59 @@ private.
 
 ### Direction
 
-Encrypt whole files, not fields — but only the two that actually carry personal
-data, and always alongside a placeholder version so the repository still builds
-without a key.
+Same shape as the sibling project's plan (`secure-docker-blueprint`, ROADMAP —
+"one data module rather than encrypted pages"), so both sites are maintained
+the same way.
 
-**Encrypt:** `docs/legal.md` and `docs/privacy.md`. Each is committed twice: an
-encrypted blob (`age`, or SOPS in binary mode) holding the real page, and a
-cleartext **placeholder** of the same page with the identity fields blanked out
-and a line saying they must be filled in before publishing. The Pages workflow
-decrypts the blob with a key from GitHub Actions Secrets, overwrites the
-placeholder in the checkout, and builds. Plain text then exists in exactly two
-places: the encrypted blob and the CI runner.
+**One values module, not five encrypted files.** The identity fields —
+operator, registered company, address, email, FN, UID — move out of the prose
+into a single module under `docs/.vitepress/data/`. `site.ts` is committed and
+holds placeholders; `site.local.ts` is the decrypted real thing, gitignored,
+and wins when present. `legal.md` and `privacy.md` keep their prose in the
+repository and interpolate the values (VitePress compiles markdown as a Vue
+SFC, so a `<script setup>` block can import the module); `config.ts` and
+`SiteFooter.vue` import the same module.
 
-That gives all three properties at once — the live site renders the real
-disclosure, the repository holds no readable identity, and a fork gets a
-template that asks to be filled in instead of someone else's disclosure.
+Why this beats encrypting the two markdown pages whole: decrypting over a
+*committed* placeholder invites a thoughtless `git add` that puts the real
+values back into a history that keeps them. A gitignored file cannot be added
+by accident. One file to encrypt, one import to resolve, and no state in the
+working tree that a fork could mistake for its own. A pre-commit guard is then
+a belt on top of braces rather than the only thing preventing a permanent
+mistake.
 
-**Leave alone:** `docs/.vitepress/config.ts`, `docs/.vitepress/theme/SiteFooter.vue`,
-`docs/public/CNAME` and `docs/public/robots.txt`. They hold the domain and
-nothing else, and:
+**Empty versus neutral placeholders.** Name, address and email go *empty* — a
+reader should see that a field is blank. Values the build cannot do without
+get a neutral stand-in instead: the site URL feeds canonical tags and the
+sitemap, so `example.com` keeps a fork building where an empty string would
+produce a broken build rather than an obvious gap.
 
-- `config.ts` and `SiteFooter.vue` are build machinery. Encrypt them and nobody
-  can build or preview the site without the key — including the operator.
-- `CNAME` has to end up as plain text in the published output for GitHub Pages
-  to serve the custom domain at all.
+**Leave in cleartext:** `docs/public/CNAME`, `docs/public/robots.txt`, and the
+domain wherever the build needs it literally.
+
+- `CNAME` has to be plain text in the published output for GitHub Pages to
+  serve the custom domain at all.
 - The domain is not personal data in the sense that matters here: it is in
   public DNS, in the `CNAME` record, in Certificate Transparency logs, and in
-  every link to the site. Encrypting it costs the local build and buys nothing.
+  every link to the site. Encrypting it would cost the local build and buy
+  nothing. Routing it through the module is still worth it — but for fork
+  convenience, one place to change instead of four, not for privacy.
 
-If the goal for those files is *fork convenience* rather than privacy — one
-place to change the domain instead of four — that is a small refactor into a
-single config value, not a crypto problem. Worth doing, separately.
+**Tooling.** `age`, whole-file, ASCII-armoured, blob in `secrets/`. SOPS earns
+its place when single fields inside a YAML stay readable, which is not the case
+here — whole file, so it would be one layer over the same age.
 
-**Tooling, to settle when implementing:** plain `age` is probably enough for
-whole-file blobs (`age -R recipients.txt -o docs/legal.md.age docs/legal.md`,
-`age -d -i key.txt` in CI). SOPS earns its keep on *partially* encrypted
-structured files, which this is not; its binary mode would work too and brings
-`.sops.yaml` rules along. Either way the key lives in Actions Secrets and never
-in the repository.
+The key reaches `age` on a file descriptor, never through the filesystem:
+
+```bash
+age -d -i <(op read "op://Private/age-signing-key/notesPlain") \
+    -o docs/.vitepress/data/site.local.ts secrets/site.age
+```
+
+The runner needs the same care for the opposite reason — writing the key to a
+temporary file and deleting it afterwards leaves a window, however short — so
+`age -d -i <(printf '%s' "$AGE_KEY")` there too, with `AGE_KEY` from a GitHub
+Actions secret.
 
 ### Answered
 
@@ -96,20 +111,30 @@ in the repository.
   on push to `main` and `workflow_dispatch` only — there is no `pull_request`
   trigger, so a fork PR never needs the key. If a PR preview build is added
   later, the committed placeholder keeps it building.
-- **Does local development break?** No, that is what the placeholder is for.
-  `npm run docs:dev` builds the placeholder pages, offline, without a key.
+- **Does local development break?** No, that is what the committed `site.ts`
+  placeholders are for. `npm run docs:dev` builds them, offline, without a key.
+- **Where does the key live?** In 1Password, alongside the SSH keys already
+  kept there, and read on a descriptor via `op read` — so it never lands in the
+  filesystem for local work. The deploy holds the same key as a GitHub Actions
+  secret. Two holders, both able to decrypt.
 
 ### Still open
 
-- **Key custody.** A single age key is a single point of failure — losing it
-  means the pages can never be decrypted again. Decide on a second recipient
-  or an offline backup as part of the implementation, not after it.
+- **Offline backup recipient.** 1Password covers the everyday case, but the
+  recipients file should carry a second, offline key as well, so losing the
+  account does not take the disclosure with it. Decide during implementation,
+  not after — a blob can only be re-encrypted to new recipients while someone
+  can still read it.
 - **The git history.** Rewrite it, or accept that `3f9308d` keeps the old
   plaintext reachable and treat this as "no new plaintext from here on"?
 - **Placeholder wording.** It has to be obviously a placeholder — a disclosure
   that looks filled in but is not is worse than an empty one.
 - **Fork instructions.** `CONTRIBUTING.md` and `README.md` need a short section
   saying what to replace and that the encrypted blobs are not theirs to keep.
+- **Keeping both sites in step.** `secure-docker-blueprint` plans the same
+  mechanism for its own site. Whichever is built first should be the one the
+  other copies, down to the file names — two variants of this would be worse
+  than one done twice.
 
 ### Done when
 
