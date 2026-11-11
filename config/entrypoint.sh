@@ -10,7 +10,8 @@ echo " cert-ops-tool"
 echo "================================================"
 
 if [ -f /run/secrets/CF_TOKEN ]; then
-  export CF_Token="$(cat /run/secrets/CF_TOKEN)"
+  CF_Token="$(cat /run/secrets/CF_TOKEN)"
+  export CF_Token
   echo " CF_Token      : loaded from Docker Secret"
 else
   echo " CF_Token      : WARNING — secret not found"

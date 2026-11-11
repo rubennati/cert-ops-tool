@@ -83,15 +83,16 @@ volumes/output/example.com/
 Some devices cannot import PEM files and require PFX (PKCS#12) format:
 
 ```bash
-docker compose exec acme-certs \
-  /scripts/convert-to-pfx.sh example.com your-chosen-password
+docker compose exec acme-certs /scripts/convert-to-pfx.sh example.com
 ```
+
+The script asks for the PFX password. For unattended use, pass it as `PFX_PASSWORD` instead (`docker compose exec -T -e PFX_PASSWORD acme-certs …`, with the variable set in the calling environment). Passing the password as a second argument still works but is deprecated — it ends up in the process list and the shell history.
 
 Creates `./volumes/output/example.com/example.com.pfx`. Use the same password when importing on the target device.
 
 ## Renewal
 
-Certificates **renew automatically** via `crond` running inside the container. `acme.sh` checks daily and renews when the certificate is within 30 days of expiry.
+Certificates **renew automatically** via `crond` running inside the container. `acme.sh` checks every six hours and renews inside the window the CA suggests (ACME Renewal Information); set `NO_ARI=1` to fall back to a fixed schedule.
 
 Manual renewal (e.g. after a key rotation):
 
