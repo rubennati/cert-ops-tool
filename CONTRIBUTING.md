@@ -66,6 +66,7 @@ Releases are created by tagging `main` with `v0.x.x`, which triggers the Docker 
 - List manual test steps you ran
 - Update `CHANGELOG.md` under the `## [Unreleased]` section
 - Update `README.md` / `CONFIG.md` if the change affects usage or configuration
+- CI must pass: ShellCheck on the scripts, an image build, and a Trivy scan that fails on a fixable CRITICAL or HIGH finding (`.github/workflows/ci.yml`)
 
 ## Code style
 
@@ -81,7 +82,11 @@ Maintained by the project owner. Version bumps follow [Semantic Versioning](http
 - **MINOR** — new functionality, backwards-compatible
 - **PATCH** — bug fixes, docs, security fixes
 
-Release flow: `dev → main` merge → `CHANGELOG.md` update → Git tag `v0.x.x` → Docker image builds automatically.
+Release flow: `CHANGELOG.md` update on `dev` → `dev → main` merge → Git tag `v0.x.x` → Docker image builds automatically → GitHub release with the changelog entry.
+
+The repository deletes a branch when its pull request is merged. That includes `dev` after a release merge — push it again from `main` afterwards.
+
+Dependabot opens pull requests against `dev` for the base image, the pinned Actions and the docs dependencies. The weekly CI run scans the published `latest` image; a red run means a new release is due so the image is rebuilt on a patched base.
 
 ## Working on the docs site
 
