@@ -30,7 +30,7 @@ Open `.env` and set at minimum:
 |---|---|
 | `ACME_EMAIL` | Your real email address — Let's Encrypt sends renewal-failure warnings here |
 | `CERT_DOMAIN` | Your most-used domain (pre-fills the wizard) |
-| `APP_TAG` | Leave as-is (`0.2.1`) unless you need a specific version |
+| `APP_TAG` | Leave as-is (`0.3.0`) unless you need a specific version |
 
 ## 2. Add the Cloudflare API token
 

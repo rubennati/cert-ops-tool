@@ -5,7 +5,7 @@
 Create TLS certificates. Upload them where you need them.
 
 [![License](https://img.shields.io/badge/License-PolyForm_NC_1.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.2.1-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.3.0-blue)](CHANGELOG.md)
 [![Docker](https://img.shields.io/badge/GHCR-cert--ops--tool-2496ED?logo=docker&logoColor=white)](https://github.com/rubennati/cert-ops-tool/pkgs/container/cert-ops-tool)
 [![Docs](https://img.shields.io/badge/docs-rubennati.github.io-green)](https://rubennati.github.io/cert-ops-tool/)
 
@@ -40,7 +40,7 @@ Built on [`acme.sh`](https://github.com/acmesh-official/acme.sh) with DNS-01 cha
 Pre-built multi-arch images (amd64 + arm64) are published to GHCR with every release:
 
 ```
-ghcr.io/rubennati/cert-ops-tool:0.2.1
+ghcr.io/rubennati/cert-ops-tool:0.3.0
 ```
 
 The compose file pulls this image automatically. No local build step needed.
@@ -121,7 +121,7 @@ docker compose exec \
 
 ## Renewal
 
-Certificates **renew automatically** via `crond` inside the container (default schedule handled by `acme.sh` itself — typically every 60 days).
+Certificates **renew automatically** via `crond` inside the container — `acme.sh` checks every six hours and renews inside the window the CA suggests (ACME Renewal Information); set `NO_ARI=1` to fall back to a fixed schedule.
 
 Manual renewal:
 
@@ -157,16 +157,19 @@ volumes/output/example.com/
 ### PFX conversion (Windows / IIS / some Synology apps)
 
 ```bash
-docker compose exec acme-certs \
-  /scripts/convert-to-pfx.sh example.com your-chosen-password
+docker compose exec acme-certs /scripts/convert-to-pfx.sh example.com
 ```
 
-Creates `./volumes/output/example.com/example.com.pfx`. Enter the same password on the target device during import.
+The script asks for the PFX password. For unattended use, pass it as `PFX_PASSWORD` instead (`docker compose exec -T -e PFX_PASSWORD acme-certs …`, with the variable set in the calling environment). Passing the password as a second argument still works but is deprecated — it ends up in the process list and the shell history.
+
+Creates `./volumes/output/example.com/example.com.pfx`. The file is created readable by its owner only. Enter the same password on the target device during import.
 
 ## Security model
 
 - **Cloudflare API token** is a Docker Secret (`.secrets/cf_token.txt`), never an environment variable
-- **Private keys** are created with `chmod 600` inside the container
+- **Private keys and PFX files** are written under `umask 077` — never group- or world-readable, not even briefly
+- **Domain names** are validated before they are used as an output path
+- **Base image** is pinned by digest and receives Alpine security updates at build time; CI scans every build and, weekly, the published image
 - **`security_opt: no-new-privileges:true`** on the container
 - **Output volume** is bind-mounted; distribution to target devices is your responsibility (SCP, rsync, restic, etc.) — this tool does not transmit keys anywhere itself
 

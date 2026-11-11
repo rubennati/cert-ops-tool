@@ -28,7 +28,7 @@ Pre-fill values for the wizard. You can override these per invocation.
 
 | Variable | Default | Bucket | Notes |
 |---|---|---|---|
-| `APP_TAG` | `0.2.1` | **Mandatory** | Pin explicitly. Check [releases](https://github.com/rubennati/cert-ops-tool/releases) before bumping. |
+| `APP_TAG` | `0.3.0` | **Mandatory** | Pin explicitly. Check [releases](https://github.com/rubennati/cert-ops-tool/releases) before bumping. |
 | `COMPOSE_PROJECT_NAME` | `cert-ops-tool` | Nice-to-have | Change only when running multiple instances on the same host. |
 | `CONTAINER_NAME_APP` | `${COMPOSE_PROJECT_NAME}` | Nice-to-have | Derived from project name — rarely needs changing. |
 | `TZ` | `UTC` | Nice-to-have | Affects log timestamps and crond schedule interpretation. Set to your local timezone for easier log reading. |

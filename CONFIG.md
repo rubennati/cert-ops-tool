@@ -41,7 +41,7 @@ These defaults are read by `scripts/wizard.sh` and shown as "press-enter" values
 
 | ENV var | What | Default | Bucket | Rationale / note |
 |---|---|---|---|---|
-| `APP_TAG` | `neilpang/acme.sh` Docker image tag | `3.1.2` | **Mandatory** | Pin explicitly. Upstream moves fast; implicit `:latest` would break reproducibility. Check compatibility at https://github.com/acmesh-official/acme.sh/releases before bumping. |
+| `APP_TAG` | `ghcr.io/rubennati/cert-ops-tool` image tag | `0.3.0` | **Mandatory** | Pin explicitly; an implicit `:latest` would break reproducibility. Check the [releases](https://github.com/rubennati/cert-ops-tool/releases) before bumping. The bundled `acme.sh` version is fixed by the image (`docker compose exec acme-certs acme.sh --version`). |
 | `COMPOSE_PROJECT_NAME` | Compose project prefix for container and volume names | `cert-ops-tool` | **Nice-to-have** | Change only when running multiple instances on the same host (unusual for this tool). |
 | `CONTAINER_NAME_APP` | Container name | `${COMPOSE_PROJECT_NAME}` | **Nice-to-have** | Follow the pattern, derived from project name. |
 | `TZ` | Timezone inside the container | `UTC` | **Nice-to-have** | Affects log timestamps and `crond` schedule interpretation. Set to your operating timezone for easier log reading. |
@@ -62,7 +62,7 @@ These defaults are read by `scripts/wizard.sh` and shown as "press-enter" values
 
 ### Renewal schedule
 
-`crond` runs inside the container (`command: crond -f` in `docker-compose.yml`). `acme.sh` installs its own crontab entry on first issuance — renewal is triggered daily, with renewal happening when the cert is within 30 days of expiry (configurable via `acme.sh --days N`).
+`crond` runs inside the container (`command: crond -f` in `docker-compose.yml`). `acme.sh` installs its own crontab entry on first issuance — the job runs every six hours and renews inside the window the CA suggests via ACME Renewal Information (ARI). An explicit `acme.sh --days N` outranks that window; `NO_ARI=1` disables it.
 
 To inspect the current crontab inside the container:
 
