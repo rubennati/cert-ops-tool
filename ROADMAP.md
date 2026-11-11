@@ -206,7 +206,7 @@ entry above.
 
 - **No security headers on the domain.** The live response carries no HSTS, no
   CSP, no `X-Content-Type-Options`, `Referrer-Policy` or `Permissions-Policy`
-  (checked 2026-08-03 against the public IP). That is Cloudflare and Pages
+  (checked 2026-08-03 and again 2026-11-12 against the public IP). That is Cloudflare and Pages
   configuration, not repository content — but for a site about TLS it is a poor
   look, and a CSP is the one that needs thought rather than a switch.
 - **No `/.well-known/security.txt`** (RFC 9116). Nothing on the site claims one
