@@ -7,7 +7,7 @@ Create TLS certificates. Upload them where you need them.
 [![License](https://img.shields.io/badge/License-PolyForm_NC_1.0-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.3.0-blue)](CHANGELOG.md)
 [![Docker](https://img.shields.io/badge/GHCR-cert--ops--tool-2496ED?logo=docker&logoColor=white)](https://github.com/rubennati/cert-ops-tool/pkgs/container/cert-ops-tool)
-[![Docs](https://img.shields.io/badge/docs-rubennati.github.io-green)](https://rubennati.github.io/cert-ops-tool/)
+[![Docs](https://img.shields.io/badge/docs-cert--ops.rubennati.at-green)](https://cert-ops.rubennati.at/)
 
 </div>
 
