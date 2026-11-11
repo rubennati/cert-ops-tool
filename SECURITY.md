@@ -6,8 +6,8 @@ This tool is in early-stage development (`0.x`). Only the latest release line re
 
 | Version | Supported |
 |---------|-----------|
-| 0.1.x   | ✅ |
-| < 0.1   | ❌ |
+| 0.3.x   | ✅ |
+| < 0.3   | ❌ — upgrade to the latest release; older images are not rebuilt |
 
 ## Reporting a vulnerability
 
