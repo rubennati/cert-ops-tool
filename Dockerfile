@@ -1,5 +1,5 @@
 # Base image pinned by tag and digest. Dependabot proposes updates to both.
-FROM neilpang/acme.sh:3.1.6@sha256:94a84ef906c6226720cfb837d8eabe2fe05961937ea38a3fed7a654a65c64265
+FROM neilpang/acme.sh:3.1.6@sha256:fd072646a6acf330795e63ff231ec9fd65d80ca00ddaa83ca10617ab7fd48a9b
 
 # Pull in Alpine security fixes published after the base image was built.
 RUN apk upgrade --no-cache
